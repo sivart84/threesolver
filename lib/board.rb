@@ -107,7 +107,7 @@ class Board
 
   # Mostly duplicated in #move_left_right method. Possibly figure out how to abstract them into one method.
   def move_up_down(rows, direction)
-    updated_rows = []
+    updated_cols = []
     rows.each do |cur_x|
       to_x = cur_x + direction[0]
       (0..3).each do |cur_y|
@@ -117,17 +117,20 @@ class Board
           if compatible_nums?(cur_num, to_num)
             @board[to_x][cur_y] = combine_nums(cur_num, to_num)
             @board[cur_x][cur_y] = 0
-            updated_rows.push(cur_y)
+            updated_cols.push(cur_y)
           end
         end
       end
     end
-    updated_rows.uniq
-    # add the next card from the stack to a random updated_row
+    unless updated_cols.empty?
+      new_y = updated_cols.uniq.sample(random: @rng)
+      new_x = direction[0] == 1 ? 0 : -1 
+      @board[new_x][new_y] = @stack.get_next
+    end
   end
 
   def move_left_right(cols, direction)
-    updated_cols = []
+    updated_rows = []
     cols.each do |cur_y|
       to_y = cur_y + direction[1]
       (0..3).each do |cur_x|
@@ -137,13 +140,16 @@ class Board
           if compatible_nums?(cur_num, to_num)
             @board[cur_x][to_y] = combine_nums(cur_num, to_num)
             @board[cur_x][cur_y] = 0
-            updated_cols.push(cur_x)
+            updated_rows.push(cur_x)
           end
         end
       end
     end
-    updated_cols.uniq
-    # add the next card from the stack to a random updated_col
+    unless updated_rows.empty?
+      new_x = updated_rows.uniq.sample(random: @rng)
+      new_y = direction[1] == 1 ? 0 : -1 
+      @board[new_x][new_y] = @stack.get_next
+    end
   end
 
 end

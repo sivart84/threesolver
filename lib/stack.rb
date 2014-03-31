@@ -17,7 +17,7 @@ class Stack
 
   def get_next
     next_num = @stack.shift
-    @stack.rebuild if @stack.empty?
+    rebuild if @stack.empty?
     return next_num
   end
 
