@@ -9,7 +9,16 @@ def display(stack, board)
 end
 
 begin
-  stack = Stack.new
-  game_board = Board.new(stack)
-  display(stack, game_board)
+  seed = rand(2048)
+  rng = Random.new(seed)
+  puts "USING SEED: #{rng.seed}\n\n"
+  stack = Stack.new(rng)
+  game_board = Board.new(rng, stack)
+  loop do
+    display(stack, game_board)
+    puts "\n"
+    puts "Move: "
+    dir = gets.chomp.to_sym
+    game_board.move(dir)
+  end
 end

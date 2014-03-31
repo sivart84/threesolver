@@ -3,10 +3,10 @@
 # Maintains the upcoming stack of cards
 
 class Stack
-  attr_accessor :stack, :seed, :force_seed
+  attr_accessor :stack, :rng, :force_seed
 
-  def initialize(force_seed = nil)
-    @force_seed = force_seed
+  def initialize(rng)
+    @rng = rng
     rebuild
     return self
   end
@@ -27,12 +27,7 @@ class Stack
   def rebuild
     default_stack = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
     # need to add bonus number when applicable...
-    @stack = default_stack.shuffle(random: Random.new(update_seed))
-  end
-
-  def update_seed
-    return @force_seed unless @force_seed.nil?
-    @seed = rand(1024)
+    @stack = default_stack.shuffle(random: rng)
   end
 
 end
