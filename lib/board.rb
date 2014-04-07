@@ -11,6 +11,7 @@ class Board
 
   DIR_COORDS = {up: [-1, 0], down: [1, 0], left: [0, -1], right: [0, 1]}
 
+  #      ['0', '1', '2', '3', '4', '5',  '6',  '7',  '8',  '9',   '10',  '11',  '12',   '13',   '14',   '15'   ]
   NUMS = ['0', '1', '2', '3', '6', '12', '24', '48', '96', '192', '384', '768', '1536', '3072', '6144', '12288']
 
   attr_accessor :board, :rng, :stack
@@ -51,6 +52,24 @@ class Board
     when :right
       move_left_right([2, 1, 0], DIR_COORDS[direction])
     end
+  end
+
+  def has_moves?
+    # return true if we find an empty spot, or a num that can combine with a neighbor
+    each_num do |num, x, y|
+      return true if num == 0
+      return true if combines_with_neighbor?(num, x, y)
+    end
+    # otherwise we have no moves, game over man...
+    return false
+  end
+
+  def score
+    score = 0
+    each_num do |num, x, y|
+      score += 3**(num - 2) unless num == 1 or num == 2
+    end
+    return score
   end
 
 
@@ -103,6 +122,27 @@ class Board
     arr = [cur_num, to_num].uniq
     inc = arr.length == 1 ? 1 : 0
     return arr.reduce(:+) + inc
+  end
+
+  def combines_with_neighbor?(num, x, y)
+    # check up neighbor
+    unless x == 0
+      return true if compatible_nums?(num, @board[x - 1][y])
+    end
+    # check down neighbor
+    unless x == 3
+      return true if compatible_nums?(num, @board[x + 1][y])
+    end
+    # check left neighbor
+    unless y == 0
+      return true if compatible_nums?(num, @board[x][y - 1])
+    end
+    # check right neighbor
+    unless y == 3
+      return true if compatible_nums?(num, @board[x][y + 1])
+    end
+    # if we haven't found a match, return false
+    return false
   end
 
   # Mostly duplicated in #move_left_right method. Possibly figure out how to abstract them into one method.

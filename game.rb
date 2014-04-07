@@ -28,7 +28,10 @@ class Game
       puts "Move: "
       dir = gets.chomp.to_sym
       @game_board.move(dir)
+      break unless @game_board.has_moves?
     end
+    puts "GAME OVER, MAN! GAME OVER!"
+    puts "Final score: #{@game_board.score}"
   end
 
 end
